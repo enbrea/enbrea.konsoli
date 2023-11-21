@@ -14,7 +14,7 @@
     <Version>0.0.1</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/stuebersystems/enbrea.consolewriter</RepositoryUrl>
+    <RepositoryUrl>https://github.com/stuebersystems/enbrea.konsoli</RepositoryUrl>
     <PackageTags>console</PackageTags>
   </PropertyGroup>
 
