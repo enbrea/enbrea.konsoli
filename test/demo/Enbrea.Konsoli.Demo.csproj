@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IsPackable>false</IsPackable>
+    <Authors>STÜBER SYSTEMS GmbH</Authors>
+    <Company>STÜBER SYSTEMS GmbH</Company>
+    <Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
+    <Product>ENBREA Konsoli</Product>
+    <Description>Demo App for ENBREA Konsoli</Description>
+    <Version>0.0.1</Version>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Enbrea.Konsoli.csproj" />
+  </ItemGroup>
+
+</Project>
