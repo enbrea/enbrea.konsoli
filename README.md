@@ -1,5 +1,5 @@
 [![NuGet Gallery](https://img.shields.io/badge/NuGet%20Gallery-enbrea.konsoli-blue.svg)](https://www.nuget.org/packages/Enbrea.Konsoli/)
-![GitHub](https://img.shields.io/github/license/enbrea/enbrea.konsoli
+![GitHub](https://img.shields.io/github/license/enbrea/enbrea.konsoli)
 
 # ENBREA Konsoli
 
