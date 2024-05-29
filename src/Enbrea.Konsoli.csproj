@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>STÜBER SYSTEMS GmbH</Authors>
     <Company>STÜBER SYSTEMS GmbH</Company>
-    <Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
+    <Copyright>© 2024 STÜBER SYSTEMS GmbH</Copyright>
     <Product>ENBREA Konsoli</Product>
     <Description>.NET library for displaying nice looking messages and visualising progress in console apps</Description>
     <PackageLicenseUrl></PackageLicenseUrl>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
 </Project>
