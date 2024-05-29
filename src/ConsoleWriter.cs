@@ -1,8 +1,8 @@
-﻿#region ENBREA Konsoli - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    ENBREA Konsoli 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    Licensed under the MIT License, Version 2.0. 
  * 
@@ -32,7 +32,7 @@ namespace Enbrea.Konsoli
             CurrentProgressMessage = null;
             CurrentProgressValue = 0;
             InProgress = false;
-            MaxLineWidth = Console.BufferWidth;
+            MaxLineWidth = !Console.IsOutputRedirected ? Console.BufferWidth : int.MaxValue;
             MaxProgressValue = progressValueUnit == ProgressUnit.Percent ? 100 : long.MaxValue;
             MinProgressValue = 0;
             NoProgress = false;
@@ -83,7 +83,14 @@ namespace Enbrea.Konsoli
         {
             get
             {
-                return Math.Max(0, Math.Min(Console.BufferWidth, MaxLineWidth) - 1 - Math.Max(Theme.OkLabel.Length, Theme.FailedLabel.Length));
+                if (!Console.IsOutputRedirected)
+                {
+                    return Math.Max(0, Math.Min(Console.BufferWidth, MaxLineWidth) - 1 - Math.Max(Theme.OkLabel.Length, Theme.FailedLabel.Length));
+                }
+                else 
+                {
+                    return Math.Max(0, MaxLineWidth - 1 - Math.Max(Theme.OkLabel.Length, Theme.FailedLabel.Length));
+                }
             }
         }
 
@@ -629,7 +636,7 @@ namespace Enbrea.Konsoli
                 _cachedMessage = CurrentProgressMessage;
                 Console.ForegroundColor = Theme.ProgressTextColor;
                 Console.BackgroundColor = Theme.DefaultBackgroundColor;
-                Console.Write(StringExtensions.CutOrPadRight(_cachedMessage, MaxMessageLength));
+                Console.Write(!Console.IsOutputRedirected ? StringExtensions.CutOrPadRight(_cachedMessage, MaxMessageLength) : _cachedMessage);
                 Console.ForegroundColor = Theme.DefaultTextColor;
                 Console.Write(' ');
             }

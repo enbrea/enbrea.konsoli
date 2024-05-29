@@ -1,8 +1,8 @@
-﻿#region ENBREA Konsoli - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    ENBREA Konsoli 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    Licensed under the MIT License, Version 2.0. 
  * 
