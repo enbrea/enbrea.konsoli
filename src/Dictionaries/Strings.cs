@@ -16,16 +16,16 @@ namespace Enbrea.Konsoli
     /// </summary>
     public static class Strings
     {
-        public const string Bytes = "Bytes";
-        public const string Error = "Error";
-        public const string Failed = "Failed";
-        public const string GB = "GB";
-        public const string Information = "Info";
-        public const string KB = "KB";
-        public const string MB = "MB";
-        public const string Ok = "OK";
-        public const string Success = "Success";
-        public const string TB = "TB";
-        public const string Warning = "Warning";
+        public static string Bytes = "Bytes";
+        public static string Error = "Error";
+        public static string Failed = "Failed";
+        public static string GB = "GB";
+        public static string Information = "Info";
+        public static string KB = "KB";
+        public static string MB = "MB";
+        public static string Ok = "OK";
+        public static string Success = "Success";
+        public static string TB = "TB";
+        public static string Warning = "Warning";
     }
 }
