@@ -32,7 +32,7 @@ namespace Enbrea.Konsoli
             CurrentProgressMessage = null;
             CurrentProgressValue = 0;
             InProgress = false;
-            MaxLineWidth = !Console.IsOutputRedirected ? Console.BufferWidth : int.MaxValue;
+            MaxLineWidth = !Console.IsOutputRedirected ? Console.BufferWidth - 1 : int.MaxValue - 1;
             MaxProgressValue = progressValueUnit == ProgressUnit.Percent ? 100 : long.MaxValue;
             MinProgressValue = 0;
             NoProgress = false;
