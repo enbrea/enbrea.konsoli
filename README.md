@@ -5,7 +5,7 @@
 
 A small .NET library for displaying nice looking messages and visualising progress in console applications:
 
-+ Supports .NET 6, .NET 7 and .NET 8
++ Supports .NET 6, .NET 8 and .NET 9
 + Supports callouts (information, success, warning, error)
 + Supports progress visualisation with different progress units:
   + Percent

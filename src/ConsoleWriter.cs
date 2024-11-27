@@ -37,6 +37,7 @@ namespace Enbrea.Konsoli
             MinProgressValue = 0;
             NoProgress = false;
             ProgressValueUnit = progressValueUnit;
+            Strings = new ConsoleWriterStrings();
             Theme = new ConsoleWriterTheme();
         }
 
@@ -113,6 +114,11 @@ namespace Enbrea.Konsoli
         /// Progress value unit
         /// </summary>
         public ProgressUnit ProgressValueUnit { get; set; }
+
+        /// <summary>
+        /// Strings (for trabnslation purpose)
+        /// </summary>
+        public ConsoleWriterStrings Strings { get; set; }
 
         /// <summary>
         /// Theme (colors, labels, formats)
