@@ -27,7 +27,7 @@ namespace Enbrea.Konsoli
             GB = Strings.GB;
             KB = Strings.KB;
             MB = Strings.MB;
-            Ok = Strings.MB;
+            Ok = Strings.Ok;
             Success = Strings.Success;
             TB = Strings.TB;
             Warning = Strings.Warning;
