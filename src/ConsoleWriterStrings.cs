@@ -22,15 +22,15 @@ namespace Enbrea.Konsoli
         public ConsoleWriterStrings()
         {
             Bytes = Strings.Bytes;
-            Error = Strings.Bytes;
-            Failed = Strings.Bytes;
-            GB = Strings.Bytes;
-            KB = Strings.Bytes;
-            MB = Strings.Bytes;
-            Ok = Strings.Bytes;
-            Success = Strings.Bytes;
-            TB = Strings.Bytes;
-            Warning = Strings.Bytes;
+            Error = Strings.Error;
+            Failed = Strings.Failed;
+            GB = Strings.GB;
+            KB = Strings.KB;
+            MB = Strings.MB;
+            Ok = Strings.Ok;
+            Success = Strings.Success;
+            TB = Strings.TB;
+            Warning = Strings.Warning;
         }
 
         public string Bytes { get; set; }
