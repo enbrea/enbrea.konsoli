@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Enbrea.Konsoli.csproj" />
+  <Project Path="test/demo/Enbrea.Konsoli.Demo.csproj" />
+</Solution>
