@@ -1,21 +1,28 @@
-﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
+﻿#region Enbrea.Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
- *    ENBREA Konsoli 
+ *    Enbrea.Konsoli 
  *    
  *    Copyright (C) STÜBER SYSTEMS GmbH
  *
- *    Licensed under the MIT License, Version 2.0. 
+ *    Licensed under the MIT License.
  * 
  */
 #endregion
 
-namespace Enbrea.Konsoli
+namespace Enbrea.Konsoli;
+
+/// <summary>
+/// Progress results
+/// </summary>
+public enum ProgressResult
 {
-    /// <summary>
-    /// Progress results
-    /// </summary>
-    public enum ProgressResult
-    {
-        OK, Failed
-    }
+	/// <summary>
+	/// Operation was successful
+	/// </summary>
+	OK,
+
+	/// <summary>
+	/// Operation was canceled
+	/// </summary>
+	Failed
 }

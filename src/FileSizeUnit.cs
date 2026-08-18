@@ -1,21 +1,28 @@
-﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
+﻿#region Enbrea.Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
- *    ENBREA Konsoli 
+ *    Enbrea.Konsoli 
  *    
  *    Copyright (C) STÜBER SYSTEMS GmbH
  *
- *    Licensed under the MIT License, Version 2.0. 
+ *    Licensed under the MIT License.
  * 
  */
 #endregion
 
-namespace Enbrea.Konsoli
+namespace Enbrea.Konsoli;
+
+/// <summary>
+/// File size units
+/// </summary>
+public enum FileSizeUnit
 {
     /// <summary>
-    /// File size units
+    /// Auto unit selection
     /// </summary>
-    public enum FileSizeUnit
-    {
-        Auto, BytesOnly
-    }
+    Auto,
+
+    /// <summary>
+    /// Bytes only
+    /// </summary>
+    BytesOnly
 }

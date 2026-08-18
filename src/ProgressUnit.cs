@@ -1,21 +1,33 @@
-﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
+﻿#region Enbrea.Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
- *    ENBREA Konsoli 
+ *    Enbrea.Konsoli 
  *    
  *    Copyright (C) STÜBER SYSTEMS GmbH
  *
- *    Licensed under the MIT License, Version 2.0. 
+ *    Licensed under the MIT License.
  * 
  */
 #endregion
 
-namespace Enbrea.Konsoli
+namespace Enbrea.Konsoli;
+
+/// <summary>
+/// Progress units
+/// </summary>
+public enum ProgressUnit
 {
-    /// <summary>
-    /// Progress units
-    /// </summary>
-    public enum ProgressUnit
-    {
-        Percent, Count, FileSize
-    }
+	/// <summary>
+	/// Progress in percent
+	/// </summary>
+	Percent,
+
+	/// <summary>
+	/// Progress in count
+	/// </summary>
+	Count,
+
+	/// <summary>
+	/// Progress in file size
+	/// </summary>
+	FileSize
 }

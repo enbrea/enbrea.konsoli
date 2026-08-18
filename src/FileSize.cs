@@ -1,139 +1,152 @@
-﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
+﻿#region Enbrea.Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
- *    ENBREA Konsoli 
+ *    Enbrea.Konsoli 
  *    
  *    Copyright (C) STÜBER SYSTEMS GmbH
  *
- *    Licensed under the MIT License, Version 2.0. 
+ *    Licensed under the MIT License.
  * 
  */
 #endregion
 
-using System;
+namespace Enbrea.Konsoli;
 
-namespace Enbrea.Konsoli
+/// <summary>
+/// Represents a file size.
+/// </summary>
+public readonly struct FileSize : IEquatable<FileSize>
 {
+    private const long BytesPerGigabyte = BytesPerMegabyte * 1024L;
+    private const long BytesPerKilobyte = 1024L;
+    private const long BytesPerMegabyte = BytesPerKilobyte * 1024L;
+    private const long BytesPerTerabyte = BytesPerGigabyte * 1024L;
+
     /// <summary>
-    /// Represents a file size
+    /// Initializes a new instance of the <see cref="FileSize"/> struct.
     /// </summary>
-    public struct FileSize
+    /// <param name="value">The file size in bytes.</param>
+    public FileSize(long value)
     {
-        /// <summary>
-        /// The raw file size value in Bytes
-        /// </summary>
-        public long Value;
+        ArgumentOutOfRangeException.ThrowIfNegative(value);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileSize"/> class.
-        /// </summary>
-        /// <param name="value">Initial value in Bytes</param>
-        public FileSize(long value)
+        Value = value;
+    }
+
+    /// <summary>
+    /// Gets the raw file size in bytes.
+    /// </summary>
+    public long Value { get; }
+
+    /// <summary>
+    /// Converts a byte value to a <see cref="FileSize"/>.
+    /// </summary>
+    /// <param name="value">The file size in bytes.</param>
+    public static implicit operator FileSize(long value)
+    {
+        return new FileSize(value);
+    }
+
+    /// <summary>
+    /// Converts a <see cref="FileSize"/> to its raw byte value.
+    /// </summary>
+    /// <param name="fileSize">The file size.</param>
+    public static implicit operator long(FileSize fileSize)
+    {
+        return fileSize.Value;
+    }
+
+    /// <summary>
+    /// Determines whether two file sizes are not equal.
+    /// </summary>
+    public static bool operator !=(FileSize left, FileSize right)
+    {
+        return !left.Equals(right);
+    }
+
+    /// <summary>
+    /// Determines whether two file sizes are equal.
+    /// </summary>
+    public static bool operator ==(FileSize left, FileSize right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public bool Equals(FileSize other)
+    {
+        return Value == other.Value;
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        return obj is FileSize other && Equals(other);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
+
+    /// <summary>
+    /// Returns the file size using the most appropriate unit.
+    /// </summary>
+    /// <returns>The formatted file size.</returns>
+    public override string ToString()
+    {
+        return ToString(FileSizeUnit.Auto);
+    }
+
+    /// <summary>
+    /// Returns the formatted file size.
+    /// </summary>
+    /// <param name="unit">The file size formatting mode.</param>
+    /// <returns>The formatted file size.</returns>
+    public string ToString(FileSizeUnit unit)
+    {
+        return unit switch
         {
-            Value = value;
+            FileSizeUnit.Auto => GenerateAutoString(),
+            FileSizeUnit.BytesOnly => $"{Value} {Strings.Bytes}",
+            _ => throw new ArgumentOutOfRangeException(nameof(unit))
+        };
+    }
+
+
+    /// <summary>
+    /// Formats the file size value with the specified divisor and unit.
+    /// </summary>
+    private static string Format(long value, long divisor, string unit)
+    {
+        return $"{decimal.Divide(value, divisor):0.##} {unit}";
+    }
+
+    /// <summary>
+    /// Generates a string representation of the file size using the most appropriate unit (Bytes, KB, MB, GB, TB).
+    /// </summary>
+    private string GenerateAutoString()
+    {
+        if (Value >= BytesPerTerabyte)
+        {
+            return Format(Value, BytesPerTerabyte, Strings.TB);
         }
 
-        /// <summary>
-        /// Long to FileSize operator
-        /// </summary>
-        /// <param name="value">Value in Bytes</param>
-        public static implicit operator FileSize(long value)
+        if (Value >= BytesPerGigabyte)
         {
-            return new FileSize(value);
+            return Format(Value, BytesPerGigabyte, Strings.GB);
         }
 
-        /// <summary>
-        /// FileSize to long operator
-        /// </summary>
-        /// <param name="fs">File size</param>
-        public static implicit operator long(FileSize fs)
+        if (Value >= BytesPerMegabyte)
         {
-            return fs.Value;
+            return Format(Value, BytesPerMegabyte, Strings.MB);
         }
 
-        /// <summary>
-        /// Equality operator for FileSize values 
-        /// </summary>
-        /// <param name="fs1">First file size</param>
-        /// <param name="fs2">Second file size</param>
-        /// <returns>True if not equal</returns>
-        public static bool operator !=(FileSize fs1, FileSize fs2)
+        if (Value >= BytesPerKilobyte)
         {
-            return !(fs1 == fs2);
+            return Format(Value, BytesPerKilobyte, Strings.KB);
         }
 
-        /// <summary>
-        /// Equality operator for FileSize values 
-        /// </summary>
-        /// <param name="fs1">First file size</param>
-        /// <param name="fs2">Second file size</param>
-        /// <returns>True if equal</returns>
-        public static bool operator ==(FileSize fs1, FileSize fs2)
-        {
-            return (fs1.Value == fs2.Value);
-        }
-
-        /// <summary>
-        /// Comparing this instance with another one
-        /// </summary>
-        /// <param name="obj">Another instance</param>
-        /// <returns>True if equal</returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is FileSize)
-            {
-                return ((FileSize)obj) == this;
-            }
-            return base.Equals(obj);
-        }
-
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        /// <summary>
-        /// Displays file size as string
-        /// </summary>
-        /// <returns>File size as string</returns>
-        public override string ToString()
-        {
-            return ToString(FileSizeUnit.Auto);
-        }
-
-        /// <summary>
-        /// Displays the file size as string 
-        /// </summary>
-        /// <param name="unit">File size unit</param>
-        /// <returns>File size as string</returns>
-        /// <remarks>
-        /// Code adapted from: https://lonewolfonline.net/format-number-kb-mb-gb/
-        /// </remarks>
-        public string ToString(FileSizeUnit unit)
-        {
-            if (unit == FileSizeUnit.Auto)
-            {
-                const int scale = 1024;
-                string[] orders = new string[] { Strings.TB, Strings.GB, Strings.MB, Strings.KB, Strings.Bytes };
-                long max = (long)Math.Pow(scale, orders.Length - 1);
-
-                foreach (var order in orders)
-                {
-                    if (Value > max)
-                    {
-                        return string.Format("{0:##.##} {1}", decimal.Divide(Value, max), order);
-                    }
-                    max /= scale;
-                }
-                return string.Format("0 {0}", Strings.Bytes);
-            }
-            else
-            {
-                return string.Format("{0:##.##} {1}", Value, Strings.Bytes);
-            }
-        }
+        return $"{Value} {Strings.Bytes}";
     }
 }

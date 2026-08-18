@@ -1,20 +1,17 @@
-﻿#region ENBREA Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
+﻿#region Enbrea.Konsoli - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
- *    ENBREA Konsoli
+ *    Enbrea.Konsoli
  *    
  *    Copyright (C) STÜBER SYSTEMS GmbH
  *
- *    Licensed under the MIT License, Version 2.0. 
+ *    Licensed under the MIT License.
  * 
  */
 #endregion
 
 using Serilog;
 using Serilog.Extensions.Logging;
-using System;
-using System.IO;
 using System.Reflection;
-using System.Threading;
 
 namespace Enbrea.Konsoli.Demo
 {
@@ -40,7 +37,7 @@ namespace Enbrea.Konsoli.Demo
         {
             try
             {
-                Console.WriteLine("PROGRESS DEMO");
+                Console.WriteLine("Enbrea.Konsoli Demo");
                 Console.WriteLine();
                 
                 // Creates a logger
@@ -49,7 +46,7 @@ namespace Enbrea.Konsoli.Demo
                 // Count Demo
                 var consoleWriter = new ConsoleWriter(ProgressUnit.Count, logger)
                 {
-                    Theme = new ConsoleWriterTheme()
+                    Strings = new ConsoleWriterStrings()
                     {
                         ProgressTextFormat = "> {0}"
                     },
@@ -86,7 +83,7 @@ namespace Enbrea.Konsoli.Demo
                 // Percent Demo
                 consoleWriter = new ConsoleWriter(ProgressUnit.Percent, logger)
                 {
-                    Theme = new ConsoleWriterTheme()
+                    Strings = new ConsoleWriterStrings()
                     {
                         ProgressTextFormat = "> {0}"
                     }
@@ -119,7 +116,7 @@ namespace Enbrea.Konsoli.Demo
                 // Custom Value Demo
                 consoleWriter = new ConsoleWriter(ProgressUnit.Percent, logger)
                 {
-                    Theme = new ConsoleWriterTheme()
+                    Strings = new ConsoleWriterStrings()
                     {
                         ProgressTextFormat = "> {0}"
                     }
@@ -135,7 +132,7 @@ namespace Enbrea.Konsoli.Demo
                 for (var i = 1; i <= 100; ++i)
                 {
                     DoSomething(10);
-                    consoleWriter.ContinueProgress("{0}/{1}", i, i*10);
+                    consoleWriter.ContinueProgress("{0}/{1}", i, i * 10);
                 }
                 consoleWriter.FinishProgress();
 
@@ -152,7 +149,7 @@ namespace Enbrea.Konsoli.Demo
                 // Failed Demo
                 consoleWriter = new ConsoleWriter(ProgressUnit.Percent, logger)
                 {
-                    Theme = new ConsoleWriterTheme()
+                    Strings = new ConsoleWriterStrings()
                     {
                         ProgressTextFormat = "> {0}"
                     }
@@ -195,12 +192,15 @@ namespace Enbrea.Konsoli.Demo
                 // File Donwload Demo
                 consoleWriter = new ConsoleWriter(ProgressUnit.FileSize, logger)
                 {
-                    Theme = new ConsoleWriterTheme()
+                    Strings = new ConsoleWriterStrings()
                     {
                         CaptionFormat = "** {0} **",
-                        CaptionTextColor = ConsoleColor.Blue,
-                        MessageTextColor = ConsoleColor.Green,
                         ProgressTextFormat = "> {0}"
+                    },
+                    Theme = new ConsoleWriterTheme()
+                    {
+                        CaptionTextColor = ConsoleColor.Blue,
+                        MessageTextColor = ConsoleColor.Green
                     },
                     MaxProgressValue = 2048
                 };
