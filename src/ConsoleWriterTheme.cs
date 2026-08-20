@@ -21,6 +21,8 @@ public class ConsoleWriterTheme
     /// </summary>
     public ConsoleWriterTheme()
     {
+        CanceledLabelBackgroundColor = ConsoleColor.Red;
+        CanceledLabelTextColor = ConsoleColor.White;
         CaptionTextColor = ConsoleColor.Yellow;
         DefaultBackgroundColor = Console.BackgroundColor;
         DefaultTextColor = Console.ForegroundColor;
@@ -28,7 +30,6 @@ public class ConsoleWriterTheme
         ErrorLabelBackgroundColor = ConsoleColor.Red;
         ErrorLabelTextColor = ConsoleColor.White;
         ErrorTextColor = ConsoleColor.Red;
-        FailedLabel = Strings.Failed;
         FailedLabelBackgroundColor = ConsoleColor.Red;
         FailedLabelTextColor = ConsoleColor.White;
         InformationBackgroundColor = Console.BackgroundColor; 
@@ -37,7 +38,7 @@ public class ConsoleWriterTheme
         InformationTextColor = ConsoleColor.White;
         MessageTextColor = Console.ForegroundColor;
         OkLabelBackgroundColor = ConsoleColor.Green;
-        OkLabelColor = ConsoleColor.White;
+        OkLabelTextColor = ConsoleColor.White;
         ProgressTextColor = Console.ForegroundColor;
         ProgressValueColor = Console.ForegroundColor;
         SuccessBackgroundColor = Console.BackgroundColor;
@@ -49,6 +50,16 @@ public class ConsoleWriterTheme
         WarningLabelTextColor = ConsoleColor.Black;
         WarningTextColor = ConsoleColor.DarkYellow;
     }
+
+    /// <summary>
+    /// Background color of <see cref="ProgressResult.Canceled"/>
+    /// </summary>
+    public ConsoleColor CanceledLabelBackgroundColor { get; set; }
+
+    /// <summary>
+    /// Text color of <see cref="ProgressResult.Canceled"/>
+    /// </summary>
+    public ConsoleColor CanceledLabelTextColor { get; set; }
 
     /// <summary>
     /// Text color of caption 
@@ -84,16 +95,12 @@ public class ConsoleWriterTheme
     /// Text color of error text
     /// </summary>
     public ConsoleColor ErrorTextColor { get; set; }
-
-    /// <summary>
-    /// Text of <see cref="ProgressResult.Failed"/>
-    /// </summary>
-    public string FailedLabel { get; set; }
-
+    
     /// <summary>
     /// Background color of <see cref="ProgressResult.Failed"/>
     /// </summary>
     public ConsoleColor FailedLabelBackgroundColor { get; set; }
+
     /// <summary>
     /// Text color of <see cref="ProgressResult.Failed"/>
     /// </summary>
@@ -132,7 +139,7 @@ public class ConsoleWriterTheme
     /// <summary>
     /// Text color of <see cref="ProgressResult.OK"/>
     /// </summary>
-    public ConsoleColor OkLabelColor { get; set; }
+    public ConsoleColor OkLabelTextColor { get; set; }
 
     /// <summary>
     /// Text color of progress text

@@ -7,17 +7,13 @@ A small .NET library for writing nicely formatted messages and visualising progr
 
 + Supports `.NET 10`, `.NET 9` and `.NET 8`.
 + Supports callouts (information, success, warning, error).
-+ Support progress visualisation with different progress units:
-  + Percent
-  + Count
-  + File size
-  + Custom formatted values
++ Supports progress visualisation with different progress units (percent, count, file size, custom formatted values).
 + Supports [output redirection](https://learn.microsoft.com/en-us/dotnet/api/Console.isoutputredirected).
-+ Supports logging via the [ILogger abstraction](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.ilogger).
++ Supports optional logging via the [ILogger abstraction](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.ilogger).
 
 It looks like this:
 
-![GIF Animation: Enbrea.Konsoli in action](img/screenshots/readme-animation.gif)
+![GIF Animation: Enbrea.Konsoli in action](assets/screenshots/readme-animation.gif)
 
 ## Installation
 

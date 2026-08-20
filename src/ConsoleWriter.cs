@@ -9,6 +9,7 @@
  */
 #endregion
 
+using Enbrea.Konsoli.Internals;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -19,16 +20,45 @@ namespace Enbrea.Konsoli;
 /// </summary>
 public class ConsoleWriter
 {
-    private readonly ILogger _logger = NullLogger<ConsoleWriter>.Instance;
+    private readonly ILogger _logger;
     private string _cachedMessage;
     private string _cachedProgressValue;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConsoleWriter"/> class.
     /// </summary>
+    public ConsoleWriter()
+        : this(ProgressUnit.Percent)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConsoleWriter"/> class.
+    /// </summary>
+    /// <param name="logger">A logging implementation</param>
+    public ConsoleWriter(ILogger logger)
+        : this(ProgressUnit.Percent, logger)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConsoleWriter"/> class.
+    /// </summary>
     /// <param name="progressValueUnit">Progress value unit</param>
     public ConsoleWriter(ProgressUnit progressValueUnit)
+        : this(progressValueUnit, null)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConsoleWriter"/> class.
+    /// </summary>
+    /// <param name="progressValueUnit">Progress value unit</param>
+    /// <param name="logger">A logging implementation</param>
+    public ConsoleWriter(ProgressUnit progressValueUnit, ILogger logger)
+    {
+        _logger = logger ?? NullLogger<ConsoleWriter>.Instance;
+
         CurrentProgressMessage = null;
         CurrentProgressValue = 0;
         InProgress = false;
@@ -46,17 +76,6 @@ public class ConsoleWriter
         ProgressValueUnit = progressValueUnit;
         Strings = new ConsoleWriterStrings();
         Theme = new ConsoleWriterTheme();
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConsoleWriter"/> class.
-    /// </summary>
-    /// <param name="progressValueUnit">Progress value unit</param>
-    /// <param name="logger">A logging implementation</param>
-    public ConsoleWriter(ProgressUnit progressValueUnit, ILogger logger)
-        : this(progressValueUnit)
-    {
-        _logger = logger ?? NullLogger<ConsoleWriter>.Instance;
     }
 
     /// <summary>
@@ -91,9 +110,7 @@ public class ConsoleWriter
     {
         get
         {
-            var statusLength = Math.Max(
-                Strings.Ok.Length,
-                Strings.Failed.Length);
+            var statusLength = Math.Max(Strings.Ok.Length, Math.Max(Strings.Canceled.Length, Strings.Failed.Length));
 
             var lineWidth = !Console.IsOutputRedirected
                 ? Math.Min(Console.BufferWidth, MaxLineWidth)
@@ -134,17 +151,18 @@ public class ConsoleWriter
     public ConsoleWriterTheme Theme { get; set; }
 
     /// <summary>
-    /// Cancels the current progress report by writing the current progress value, the status 
-    /// <see cref="ProgressResult.Failed"/> and the line terminator to the standard output stream.
+    /// Finishes the current progress report by writing the current progress value, the status 
+    /// <see cref="ProgressResult.Canceled"/> and the line terminator to the standard output stream.
     /// </summary>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter CancelProgress()
     {
         InProgress = false;
 
-        WriteStatus(ProgressResult.Failed);
+        WriteStatus(ProgressResult.Canceled);
         RestoreCursor();
 
-        LogFailedProgress(_cachedMessage, _cachedProgressValue);
+        LogCanceledProgress(_cachedMessage, _cachedProgressValue);
         ClearInternalCache();
 
         return NewLine();
@@ -154,6 +172,7 @@ public class ConsoleWriter
     /// Writes caption to the standard output stream.
     /// </summary>
     /// <param name="text">The caption text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Caption(string text)
     {
         WriteMessage(string.Format(Strings.CaptionFormat, text), Theme.CaptionTextColor, Theme.DefaultBackgroundColor);
@@ -169,6 +188,7 @@ public class ConsoleWriter
     /// output stream. 
     /// </summary>
     /// <param name="newProgressValue">New progress value</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter ContinueProgress(long newProgressValue)
     {
         InProgress = true;
@@ -188,6 +208,7 @@ public class ConsoleWriter
     /// output stream. 
     /// </summary>
     /// <param name="newCustomProgressValue">New custom progress value</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter ContinueProgress(string newCustomProgressValue)
     {
         InProgress = true;
@@ -198,7 +219,7 @@ public class ConsoleWriter
 
             WriteProgressValue(newCustomProgressValue);
         }
-        
+
         return this;
     }
 
@@ -206,17 +227,19 @@ public class ConsoleWriter
     /// Continues progress by incrementing the progress value and writing it to the standard 
     /// output stream. 
     /// </summary>
-    /// <param name="newCustomProgressValueFormat">New custom progress value format string</param>
+    /// <param name="customProgressValueFormat">New custom progress value format string</param>
     /// <param name="args">An object array that contains zero or more objects to format</param>
-    public ConsoleWriter ContinueProgress(string newCustomProgressValueFormat, params object[] args)
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
+    public ConsoleWriter ContinueProgress(string customProgressValueFormat, params object[] args)
     {
-        return ContinueProgress(string.Format(newCustomProgressValueFormat, args));
+        return ContinueProgress(string.Format(customProgressValueFormat, args));
     }
 
     /// <summary>
     /// Writes an error label and text and the line terminator to the standard output stream.
     /// </summary>
     /// <param name="text">The error text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Error(string text)
     {
         return Error(Strings.ErrorLabel, text);
@@ -227,6 +250,7 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="label">The error label</param>
     /// <param name="text">The error text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Error(string label, string text)
     {
         WriteLabel(label, Theme.ErrorLabelTextColor, Theme.ErrorLabelBackgroundColor);
@@ -239,9 +263,28 @@ public class ConsoleWriter
     }
 
     /// <summary>
+    /// Finishes the current progress report by writing the current progress value, the status
+    /// <see cref="ProgressResult.Failed"/> and the line terminator to the standard output stream.
+    /// </summary>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
+    public ConsoleWriter FailProgress()
+    {
+        InProgress = false;
+
+        WriteStatus(ProgressResult.Failed);
+        RestoreCursor();
+
+        LogFailedProgress(_cachedMessage, _cachedProgressValue);
+        ClearInternalCache();
+
+        return NewLine();
+    }
+    
+    /// <summary>
     /// Finishes the current progress report by writing the current progress value, the status 
     /// <see cref="ProgressResult.OK"/> and the line terminator to the standard output stream. 
     /// </summary>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter FinishProgress()
     {
         return CurrentCustomProgressValue != null
@@ -253,15 +296,16 @@ public class ConsoleWriter
     /// Finishes the current progress report by writing the given progress value, the status
     /// <see cref="ProgressResult.OK"/> and the line terminator to the standard output stream.
     /// </summary>
-    /// <param name="newProgressValue">The final progress value</param>
-    public ConsoleWriter FinishProgress(long newProgressValue)
+    /// <param name="finalProgressValue">The final progress value</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
+    public ConsoleWriter FinishProgress(long finalProgressValue)
     {
-        CurrentProgressValue = newProgressValue;
+        CurrentProgressValue = finalProgressValue;
         CurrentCustomProgressValue = null;
 
         if (InProgress)
         {
-            WriteProgressValue(newProgressValue);
+            WriteProgressValue(finalProgressValue);
             InProgress = false;
         }
 
@@ -279,6 +323,7 @@ public class ConsoleWriter
     /// <see cref="ProgressResult.OK"/> and the line terminator to the standard output stream. 
     /// </summary>
     /// <param name="newCustomProgressValue">The final custom progress value</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter FinishProgress(string newCustomProgressValue)
     {
         CurrentCustomProgressValue = newCustomProgressValue;
@@ -304,6 +349,7 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="newCustomProgressValueFormat">The final custom progress value format string</param>
     /// <param name="args">An object array that contains zero or more objects to format</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter FinishProgress(string newCustomProgressValueFormat, params object[] args)
     {
         return FinishProgress(string.Format(newCustomProgressValueFormat, args));
@@ -313,9 +359,10 @@ public class ConsoleWriter
     /// Writes a information label and text and the line terminator to the standard output stream.
     /// </summary>
     /// <param name="text">The information text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Information(string text)
     {
-        return Information(Strings.Information, text);
+        return Information(Strings.InformationLabel, text);
     }
 
     /// <summary>
@@ -323,10 +370,11 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="label">The information label</param>
     /// <param name="text">The information text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Information(string label, string text)
     {
         WriteLabel(label, Theme.InformationLabelTextColor, Theme.InformationLabelBackgroundColor);
-        WriteMessage(string.Format(Strings.InformationTextFormat, text), Theme.InformationTextColor, Theme.InformationBackgroundColor);
+        WriteMessage(string.Format(Strings.InformationFormat, text), Theme.InformationTextColor, Theme.InformationBackgroundColor);
 
         LogInformation(_cachedMessage);
         ClearInternalCache();
@@ -338,9 +386,10 @@ public class ConsoleWriter
     /// Writes a message and the line terminator to the standard output stream.
     /// </summary>
     /// <param name="text">The message text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Message(string text)
     {
-        WriteMessage(string.Format(Strings.MessageTextFormat, text), Theme.MessageTextColor, Theme.DefaultBackgroundColor);
+        WriteMessage(string.Format(Strings.MessageFormat, text), Theme.MessageTextColor, Theme.DefaultBackgroundColor);
 
         LogInformation(_cachedMessage);
         ClearInternalCache();
@@ -351,6 +400,7 @@ public class ConsoleWriter
     /// <summary>
     /// Writes the line terminator to the standard output stream.
     /// </summary>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter NewLine()
     {
         Console.WriteLine();
@@ -361,11 +411,12 @@ public class ConsoleWriter
     /// Writes the progress message to the standard output stream.
     /// </summary>
     /// <param name="text">The progress message text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter StartProgress(string text)
     {
         InProgress = false;
 
-        CurrentProgressMessage = string.Format(Strings.ProgressTextFormat, text);
+        CurrentProgressMessage = string.Format(Strings.ProgressFormat, text);
         CurrentProgressValue = 0;
         CurrentCustomProgressValue = null;
 
@@ -381,11 +432,12 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="text">The progress message text</param>
     /// <param name="progressValue">The progress value with which to start</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter StartProgress(string text, long progressValue)
     {
         InProgress = true;
 
-        CurrentProgressMessage = string.Format(Strings.ProgressTextFormat, text);
+        CurrentProgressMessage = string.Format(Strings.ProgressFormat, text);
         CurrentProgressValue = progressValue;
         CurrentCustomProgressValue = null;
 
@@ -402,11 +454,12 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="text">The progress message text</param>
     /// <param name="customProgressValue">The custom progress value with which to start</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter StartProgress(string text, string customProgressValue)
     {
         InProgress = true;
 
-        CurrentProgressMessage = string.Format(Strings.ProgressTextFormat, text);
+        CurrentProgressMessage = string.Format(Strings.ProgressFormat, text);
         CurrentProgressValue = 0;
         CurrentCustomProgressValue = customProgressValue;
 
@@ -422,6 +475,7 @@ public class ConsoleWriter
     /// Writes a success label and text and the line terminator to the standard output stream.
     /// </summary>
     /// <param name="text">The success text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Success(string text)
     {
         return Success(Strings.SuccessLabel, text);
@@ -432,6 +486,7 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="label">The success label</param>
     /// <param name="text">The success text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Success(string label, string text)
     {
         WriteLabel(label, Theme.SuccessLabelTextColor, Theme.SuccessLabelBackgroundColor);
@@ -447,6 +502,7 @@ public class ConsoleWriter
     /// Writes a warning label and text and the line terminator to the standard output stream.
     /// </summary>
     /// <param name="text">The warning text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Warning(string text)
     {
         return Warning(Strings.WarningLabel, text);
@@ -457,6 +513,7 @@ public class ConsoleWriter
     /// </summary>
     /// <param name="label">The warning label</param>
     /// <param name="text">The warning text</param>
+    /// <returns>The current <see cref="ConsoleWriter"/> instance</returns>
     public ConsoleWriter Warning(string label, string text)
     {
         WriteLabel(label, Theme.WarningLabelTextColor, Theme.WarningLabelBackgroundColor);
@@ -529,22 +586,22 @@ public class ConsoleWriter
 
                     if (fileSize.Value >= 1024)
                     {
-                        return $"{fileSize.ToString(FileSizeUnit.BytesOnly)} ({fileSize}), {percentValue,3:##0}%";
+                        return $"{fileSize.ToString(FileSizeUnit.BytesOnly, Strings)} ({fileSize}), {percentValue,3:##0}%";
                     }
                     else
                     {
-                        return $"{fileSize.ToString(FileSizeUnit.BytesOnly)}, {percentValue,3:##0}%";
+                        return $"{fileSize.ToString(FileSizeUnit.BytesOnly, Strings)}, {percentValue,3:##0}%";
                     }
                 }
                 else
                 {
                     if (fileSize.Value >= 1024)
                     {
-                        return $"{fileSize.ToString(FileSizeUnit.BytesOnly)} ({fileSize})";
+                        return $"{fileSize.ToString(FileSizeUnit.BytesOnly, Strings)} ({fileSize})";
                     }
                     else
                     {
-                        return fileSize.ToString(FileSizeUnit.BytesOnly);
+                        return fileSize.ToString(FileSizeUnit.BytesOnly, Strings);
                     }
                 }
 
@@ -561,6 +618,21 @@ public class ConsoleWriter
         if (!NoProgress && !Console.IsOutputRedirected)
         {
             Console.CursorVisible = false;
+        }
+    }
+
+    /// <summary>
+    /// Logs canceled progress to abstract log
+    /// </summary>
+    private void LogCanceledProgress(string message, string value)
+    {
+        if (value != null)
+        {
+            LogWarning($"[{Strings.Canceled}] {message} {value}");
+        }
+        else
+        {
+            LogWarning($"[{Strings.Canceled}] {message}");
         }
     }
 
@@ -627,6 +699,7 @@ public class ConsoleWriter
             _logger.LogWarning("{Message}", message);
         }
     }
+
     /// <summary>
     /// Writes a label to the standard output stream.
     /// </summary>
@@ -658,6 +731,7 @@ public class ConsoleWriter
             Console.BackgroundColor = Theme.DefaultBackgroundColor;
         }
     }
+
     /// <summary>
     /// Writes the current progress message to the standard output stream.
     /// </summary>
@@ -719,30 +793,38 @@ public class ConsoleWriter
         Console.ForegroundColor = Theme.DefaultTextColor;
         Console.BackgroundColor = Theme.DefaultBackgroundColor;
     }
+
     /// <summary>
     /// Writes the given status as text to the standard output stream.
     /// </summary>
     private void WriteStatus(ProgressResult status)
     {
-        if (status == ProgressResult.OK)
+        var (text, textColor, backgroundColor) = status switch
         {
-            Console.ForegroundColor = Theme.OkLabelColor;
-            Console.BackgroundColor = Theme.OkLabelBackgroundColor;
-            
-            Console.Write(Strings.Ok);
+            ProgressResult.OK => (
+                Strings.Ok,
+                Theme.OkLabelTextColor,
+                Theme.OkLabelBackgroundColor),
 
-            Console.ForegroundColor = Theme.DefaultTextColor;
-            Console.BackgroundColor = Theme.DefaultBackgroundColor;
-        }
-        else
-        {
-            Console.ForegroundColor = Theme.FailedLabelTextColor;
-            Console.BackgroundColor = Theme.FailedLabelBackgroundColor;
+            ProgressResult.Canceled => (
+                Strings.Canceled,
+                Theme.CanceledLabelTextColor,
+                Theme.CanceledLabelBackgroundColor),
 
-            Console.Write(Strings.Failed);
+            ProgressResult.Failed => (
+                    Strings.Failed,
+                    Theme.FailedLabelTextColor,
+                    Theme.FailedLabelBackgroundColor),
 
-            Console.ForegroundColor = Theme.DefaultTextColor;
-            Console.BackgroundColor = Theme.DefaultBackgroundColor;
-        }
+            _ => throw new ArgumentOutOfRangeException(nameof(status))
+        };
+
+        Console.ForegroundColor = textColor;
+        Console.BackgroundColor = backgroundColor;
+
+        Console.Write(text);
+
+        Console.ForegroundColor = Theme.DefaultTextColor;
+        Console.BackgroundColor = Theme.DefaultBackgroundColor;
     }
 }

@@ -27,12 +27,14 @@ public class ConsoleWriterStrings
         ErrorLabel = Strings.Error;
         Failed = Strings.Failed;
         GB = Strings.GB;
-        InformationTextFormat = "{0}";
+        InformationFormat = "{0}";
+        InformationLabel = Strings.Information;
         KB = Strings.KB;
         MB = Strings.MB;
-        MessageTextFormat = "{0}";
+        MessageFormat = "{0}";
         Ok = Strings.Ok;
-        ProgressTextFormat = "{0}";
+        Canceled = Strings.Canceled;
+        ProgressFormat = "{0}";
         SuccessFormat = "{0}";
         SuccessLabel = Strings.Success;
         TB = Strings.TB;
@@ -46,18 +48,14 @@ public class ConsoleWriterStrings
     public string ErrorLabel { get; set; }
     public string Failed { get; set; }
     public string GB { get; set; }
-    public string Information { get; set; }
-    public string InformationTextFormat { get; set; }
+    public string InformationFormat { get; set; }
+    public string InformationLabel { get; set; }
     public string KB { get; set; }
     public string MB { get; set; }
-    public string MessageTextFormat { get; set; }
+    public string MessageFormat { get; set; }
     public string Ok { get; set; }
-
-    /// <summary>
-    /// Progress text format string
-    /// </summary>
-    public string ProgressTextFormat { get; set; }
-
+    public string Canceled { get; set; }
+    public string ProgressFormat { get; set; }
     public string SuccessFormat { get; set; }
     public string SuccessLabel { get; set; }
     public string TB { get; set; }

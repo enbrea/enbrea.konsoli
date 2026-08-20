@@ -17,6 +17,7 @@ namespace Enbrea.Konsoli
     public static class Strings
     {
         public const string Bytes = "Bytes";
+        public const string Canceled = "Canceled";
         public const string Error = "Error";
         public const string Failed = "Failed";
         public const string GB = "GB";

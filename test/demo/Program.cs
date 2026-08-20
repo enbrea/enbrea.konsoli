@@ -19,7 +19,7 @@ namespace Enbrea.Konsoli.Demo
     {
         static Microsoft.Extensions.Logging.ILogger CreateLogger()
         {
-            // Create a new Serilog instance
+            // Creates a new Serilog instance
             var seriLog = new LoggerConfiguration()
                 .WriteTo.File(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "logs", "log.txt"))
                 .CreateLogger();
@@ -48,7 +48,7 @@ namespace Enbrea.Konsoli.Demo
                 {
                     Strings = new ConsoleWriterStrings()
                     {
-                        ProgressTextFormat = "> {0}"
+                        ProgressFormat = "> {0}"
                     },
                     MaxProgressValue = 100
                 };
@@ -85,7 +85,7 @@ namespace Enbrea.Konsoli.Demo
                 {
                     Strings = new ConsoleWriterStrings()
                     {
-                        ProgressTextFormat = "> {0}"
+                        ProgressFormat = "> {0}"
                     }
                 };
 
@@ -118,7 +118,7 @@ namespace Enbrea.Konsoli.Demo
                 {
                     Strings = new ConsoleWriterStrings()
                     {
-                        ProgressTextFormat = "> {0}"
+                        ProgressFormat = "> {0}"
                     }
                 };
 
@@ -151,7 +151,7 @@ namespace Enbrea.Konsoli.Demo
                 {
                     Strings = new ConsoleWriterStrings()
                     {
-                        ProgressTextFormat = "> {0}"
+                        ProgressFormat = "> {0}"
                     }
                 };
 
@@ -176,7 +176,7 @@ namespace Enbrea.Konsoli.Demo
                 }
                 catch
                 {
-                    consoleWriter.CancelProgress().NewLine();
+                    consoleWriter.FailProgress().NewLine();
                     Failed = true;
                 }
 
@@ -189,13 +189,13 @@ namespace Enbrea.Konsoli.Demo
                     consoleWriter.Message("100 steps counted").NewLine();
                 }
 
-                // File Donwload Demo
+                // File Download Demo
                 consoleWriter = new ConsoleWriter(ProgressUnit.FileSize, logger)
                 {
                     Strings = new ConsoleWriterStrings()
                     {
                         CaptionFormat = "** {0} **",
-                        ProgressTextFormat = "> {0}"
+                        ProgressFormat = "> {0}"
                     },
                     Theme = new ConsoleWriterTheme()
                     {

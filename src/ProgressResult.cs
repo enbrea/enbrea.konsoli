@@ -21,8 +21,13 @@ public enum ProgressResult
 	/// </summary>
 	OK,
 
-	/// <summary>
-	/// Operation was canceled
-	/// </summary>
-	Failed
+    /// <summary>
+    /// Operation was canceled
+    /// </summary>
+    Canceled,
+
+    /// <summary>
+    /// Operation failed
+    /// </summary>
+    Failed
 }

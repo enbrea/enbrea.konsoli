@@ -24,28 +24,22 @@ namespace Enbrea.Konsoli
         /// <returns>Gives back a string with a length equal to totalWidth.</returns>
         public static string CutOrPadRight(this string value, int totalWidth)
         {
-            if (totalWidth > 0)
-            {
-                if (value.Length > totalWidth)
-                {
-                    if (totalWidth > 3)
-                    {
-                        return $"{value.Substring(0, totalWidth - 3)}...";
-                    }
-                    else
-                    {
-                        return new string('.', totalWidth);
-                    }
-                }
-                else
-                {
-                    return value.PadRight(totalWidth);
-                }
-            }
-            else
+            if (totalWidth <= 0)
             {
                 return value;
             }
+
+            if (value.Length <= totalWidth)
+            {
+                return value.PadRight(totalWidth);
+            }
+
+            if (totalWidth <= 3)
+            {
+                return new string('.', totalWidth);
+            }
+
+            return $"{value[..(totalWidth - 3)]}...";
         }
     }
 }

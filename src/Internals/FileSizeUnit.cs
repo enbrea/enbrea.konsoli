@@ -9,12 +9,12 @@
  */
 #endregion
 
-namespace Enbrea.Konsoli;
+namespace Enbrea.Konsoli.Internals;
 
 /// <summary>
 /// File size units
 /// </summary>
-public enum FileSizeUnit
+internal enum FileSizeUnit
 {
     /// <summary>
     /// Auto unit selection
